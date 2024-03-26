@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Webpage</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="/styles/main.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&family=Limelight&family=Mountains+of+Christmas&family=Oswald&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">  
+    <h1>Movies Watched</h1>
+    <div class="header">
+      <h3>Add Movie</h3>
+      <form action="/new" method="post">
+        <input type="text" name="newMovie" placeholder="New Movie Watched">
+        <input type="text" name="year" placeholder="Release Year">
+        <input type="text" name="description" placeholder="Movie Description">
+        <input type="number" name="rating" placeholder="Rating">
+        <button type="submit">Add Movie</button>
+      </form>
+    </div>
+  
+    <div class="movie">
+      <% for(let movie of movieList){ %>
+        <div class="movie-reel">
+          <h3><%= movie.name %></h3>
+          <img src="https://image.tmdb.org/t/p/w500<%= movie.poster_url %>" >
+
+          <p>Overview:</p>
+          <p><%= movie.overview %></p>
+
+          <p>Review:</p>
+          <form action="/edit" method="post" style="display:none;" id="editForm<%= movie.id %>" class="edit-form">
+            <input type="hidden" name="updateMovieId" value="<%= movie.id %>">
+            <textarea name="updateMovieDescription"> <%= movie.description %></textarea>
+            <button type="submit">Save</button>
+          </form>
+
+          <div id="movieDescription<%= movie.id %>">
+            <p><%= movie.description %></p>
+            <button onclick="enableEdit('<%= movie.id %>')" class="edit-button">Edit Description</button>
+          </div>
+          <br>
+          
+          <form action="/delete" method="post" onsubmit="return confirmDelete()">
+            <button type="submit" name="deleteMovieId" value="<%= movie.id %>" class="delete-button">Delete</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+
+    <script>
+      function confirmDelete(){
+        return confirm("Are you sure you want to delete this movie?");
+      }  
+
+      function enableEdit(id){
+        document.getElementById("movieDescription" + id).style.display = "none";
+        document.getElementById("editForm" + id).style.display = "block";
+      }
+    </script>
+</body>
+</html>
