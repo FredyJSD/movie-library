@@ -1,18 +1,16 @@
 import express from "express";
 import axios from "axios";
 import bodyParser from "body-parser";
-import fs from 'fs/promises';
 import pg from 'pg'
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const db = new pg.Client({
-    user: "postgres",
-    host: "localhost",
-    database: "list",
-    password: "Fredy2024",
-    port: 5432,
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 db.connect();
@@ -21,8 +19,8 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
-const CLIENT_KEY = '2c6018d7434153b123d16ed0822f301b';
-const CLIENT_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyYzYwMThkNzQzNDE1M2IxMjNkMTZlZDA4MjJmMzAxYiIsInN1YiI6IjY1YmQ1NDNlZDdjZDA2MDEyZjUyNTM4MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.rH6LdBQOMkfCSpwBkq0jtj4ObFikyo4celC9AvdOMKw';
+const CLIENT_KEY = process.env.CLIENT_KEY;
+const CLIENT_TOKEN = process.env.CLIENT_TOKEN;
 const API_ENDPOINT = "https://api.themoviedb.org/3";
 
 const searchMovie = async (movieTitle, year) => {
@@ -116,15 +114,3 @@ app.post("/delete", async (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
-
-
-// try{
-//     const response = await axios.get(`${API_ENDPOINT}/movie/848187`,{
-//         params: {
-//             api_key: CLIENT_KEY
-//         }
-//     });
-//     console.log('Movie:', response.data);
-// } catch (error) {
-//     console.error('Error fetching popular movies:', error.message);
-// }
