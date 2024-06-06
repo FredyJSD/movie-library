@@ -2,6 +2,9 @@ import express from "express";
 import axios from "axios";
 import bodyParser from "body-parser";
 import pg from 'pg'
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -13,7 +16,11 @@ const db = new pg.Client({
     }
 });
 
-db.connect();
+
+db.connect()
+  .then(() => console.log("Connected to the database"))
+  .catch(err => console.error("Database connection error:", err));
+  
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
